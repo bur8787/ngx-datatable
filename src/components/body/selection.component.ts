@@ -80,7 +80,7 @@ export class DataTableSelectionComponent {
 
     if (select) {
       this.selectRow(event, index, row);
-    } else if (type === 'keydown') {
+    } else if (type === 'keydown' || type === 'keyup') {
       if ((<KeyboardEvent>event).keyCode === Keys.return) {
         this.selectRow(event, index, row);
       } else {
