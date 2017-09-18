@@ -197,7 +197,7 @@ export class DataTableBodyRowComponent implements DoCheck {
       event.stopPropagation();
 
       this.activate.emit({
-        type: 'keydown',
+        type: 'keyup',
         event,
         row: this.row,
         rowElement: this.element
