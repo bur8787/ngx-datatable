@@ -179,6 +179,31 @@ export class DataTableBodyRowComponent implements DoCheck {
       });
     }
   }
+  
+  @HostListener('keyup', ['$event'])
+  onKeyUp(event: KeyboardEvent): void {
+    const keyCode = event.keyCode;
+    const isTargetRow = event.target === this.element;
+
+    const isAction =
+      keyCode === Keys.return ||
+      keyCode === Keys.down ||
+      keyCode === Keys.up ||
+      keyCode === Keys.left ||
+      keyCode === Keys.right;
+
+    if (isAction && isTargetRow) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.activate.emit({
+        type: 'keydown',
+        event,
+        row: this.row,
+        rowElement: this.element
+      });
+    }
+  }
 
   @HostListener('mouseenter', ['$event'])
   onMouseenter(event: Event): void {
