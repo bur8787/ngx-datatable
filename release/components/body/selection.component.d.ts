@@ -20,10 +20,10 @@ export declare class DataTableSelectionComponent {
     prevIndex: number;
     selectRow(event: KeyboardEvent | MouseEvent, index: number, row: any): void;
     onActivate(model: Model, index: number): void;
-    onKeyboardFocus(model: Model): void;
-    focusRow(rowElement: any, keyCode: number): void;
+    onKeyboardFocus(model: Model): any;
+    focusRow(rowElement: any, keyCode: number): any;
     getPrevNextRow(rowElement: any, keyCode: number): any;
-    focusCell(cellElement: any, rowElement: any, keyCode: number, cellIndex: number): void;
+    focusCell(cellElement: any, rowElement: any, keyCode: number, cellIndex: number): any;
     getRowSelected(row: any): boolean;
     getRowSelectedIdx(row: any, selected: any[]): number;
 }

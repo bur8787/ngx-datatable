@@ -48,12 +48,12 @@ var DataTableSelectionComponent = /** @class */ (function () {
         if (select) {
             this.selectRow(event, index, row);
         }
-        else if (type === 'keydown' || type === 'keyup') {
+        else if (type === 'keydown') {
             if (event.keyCode === utils_1.Keys.return) {
                 this.selectRow(event, index, row);
             }
             else {
-                this.onKeyboardFocus(model);
+                model = this.onKeyboardFocus(model);
             }
         }
         this.activate.emit(model);
@@ -67,17 +67,21 @@ var DataTableSelectionComponent = /** @class */ (function () {
         if (shouldFocus) {
             var isCellSelection = this.selectionType === types_1.SelectionType.cell;
             if (!model.cellElement || !isCellSelection) {
-                this.focusRow(model.rowElement, keyCode);
+                var nextRow = this.focusRow(model.rowElement, keyCode);
+                model.rowElement = nextRow;
             }
             else if (isCellSelection) {
-                this.focusCell(model.cellElement, model.rowElement, keyCode, model.cellIndex);
+                var nextCell = this.focusCell(model.cellElement, model.rowElement, keyCode, model.cellIndex);
+                model.cellElement = nextCell;
             }
         }
+        return model;
     };
     DataTableSelectionComponent.prototype.focusRow = function (rowElement, keyCode) {
         var nextRowElement = this.getPrevNextRow(rowElement, keyCode);
         if (nextRowElement)
             nextRowElement.focus();
+        return nextRowElement;
     };
     DataTableSelectionComponent.prototype.getPrevNextRow = function (rowElement, keyCode) {
         var parentElement = rowElement.parentElement;
@@ -112,6 +116,7 @@ var DataTableSelectionComponent = /** @class */ (function () {
         }
         if (nextCellElement)
             nextCellElement.focus();
+        return nextCellElement;
     };
     DataTableSelectionComponent.prototype.getRowSelected = function (row) {
         return this.getRowSelectedIdx(row, this.selected) > -1;

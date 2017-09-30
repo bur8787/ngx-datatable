@@ -80,17 +80,17 @@ export class DataTableSelectionComponent {
 
     if (select) {
       this.selectRow(event, index, row);
-    } else if (type === 'keydown' || type === 'keyup') {
+    } else if (type === 'keydown') {
       if ((<KeyboardEvent>event).keyCode === Keys.return) {
         this.selectRow(event, index, row);
       } else {
-        this.onKeyboardFocus(model);
+        model = this.onKeyboardFocus(model);
       }
     }
     this.activate.emit(model);
   }
 
-  onKeyboardFocus(model: Model): void {
+  onKeyboardFocus(model: Model): any {
     const { keyCode } = <KeyboardEvent>model.event;
     const shouldFocus =
       keyCode === Keys.up ||
@@ -103,16 +103,20 @@ export class DataTableSelectionComponent {
         this.selectionType === SelectionType.cell;
 
       if (!model.cellElement || !isCellSelection) {
-        this.focusRow(model.rowElement, keyCode);
+        const nextRow = this.focusRow(model.rowElement, keyCode);
+        model.rowElement =  nextRow;
       } else if (isCellSelection) {
-        this.focusCell(model.cellElement, model.rowElement, keyCode, model.cellIndex);
+        const nextCell = this.focusCell(model.cellElement, model.rowElement, keyCode, model.cellIndex);
+        model.cellElement = nextCell;
       }
     }
+    return model;
   }
 
-  focusRow(rowElement: any, keyCode: number): void {
+  focusRow(rowElement: any, keyCode: number): any {
     const nextRowElement = this.getPrevNextRow(rowElement, keyCode);
     if (nextRowElement) nextRowElement.focus();
+    return nextRowElement;
   }
 
   getPrevNextRow(rowElement: any, keyCode: number): any {
@@ -132,7 +136,7 @@ export class DataTableSelectionComponent {
     }
   }
 
-  focusCell(cellElement: any, rowElement: any, keyCode: number, cellIndex: number): void {
+  focusCell(cellElement: any, rowElement: any, keyCode: number, cellIndex: number): any {
     let nextCellElement: HTMLElement;
 
     if (keyCode === Keys.left) {
@@ -148,6 +152,7 @@ export class DataTableSelectionComponent {
     }
 
     if (nextCellElement) nextCellElement.focus();
+    return nextCellElement;
   }
 
   getRowSelected(row: any): boolean {
