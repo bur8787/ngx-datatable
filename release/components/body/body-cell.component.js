@@ -207,7 +207,7 @@ var DataTableBodyCellComponent = /** @class */ (function () {
         if (this.value !== value) {
             this.value = value;
             this.cellContext.value = value;
-            this.sanitizedValue = this.stripHtml(value);
+            this.sanitizedValue = value !== null && value !== undefined ? this.stripHtml(value) : value;
             this.cd.markForCheck();
         }
     };
@@ -241,7 +241,7 @@ var DataTableBodyCellComponent = /** @class */ (function () {
             cellElement: this._element
         });
     };
-    DataTableBodyCellComponent.prototype.onKeyDown = function (event) {
+    DataTableBodyCellComponent.prototype.onKeyUp = function (event) {
         var keyCode = event.keyCode;
         var isTargetCell = event.target === this._element;
         var isAction = keyCode === utils_1.Keys.return ||
@@ -253,7 +253,7 @@ var DataTableBodyCellComponent = /** @class */ (function () {
             event.preventDefault();
             event.stopPropagation();
             this.activate.emit({
-                type: 'keydown',
+                type: 'keyup',
                 event: event,
                 row: this.row,
                 group: this.group,
@@ -321,7 +321,7 @@ var DataTableBodyCellComponent = /** @class */ (function () {
         'onBlur': [{ type: core_1.HostListener, args: ['blur',] },],
         'onClick': [{ type: core_1.HostListener, args: ['click', ['$event'],] },],
         'onDblClick': [{ type: core_1.HostListener, args: ['dblclick', ['$event'],] },],
-        'onKeyDown': [{ type: core_1.HostListener, args: ['keydown', ['$event'],] },],
+        'onKeyUp': [{ type: core_1.HostListener, args: ['keyup', ['$event'],] },],
     };
     return DataTableBodyCellComponent;
 }());

@@ -1883,7 +1883,7 @@ var DataTableBodyCellComponent = /** @class */ (function () {
         if (this.value !== value) {
             this.value = value;
             this.cellContext.value = value;
-            this.sanitizedValue = this.stripHtml(value);
+            this.sanitizedValue = value !== null && value !== undefined ? this.stripHtml(value) : value;
             this.cd.markForCheck();
         }
     };
@@ -1917,7 +1917,7 @@ var DataTableBodyCellComponent = /** @class */ (function () {
             cellElement: this._element
         });
     };
-    DataTableBodyCellComponent.prototype.onKeyDown = function (event) {
+    DataTableBodyCellComponent.prototype.onKeyUp = function (event) {
         var keyCode = event.keyCode;
         var isTargetCell = event.target === this._element;
         var isAction = keyCode === utils_1.Keys.return ||
@@ -1929,7 +1929,7 @@ var DataTableBodyCellComponent = /** @class */ (function () {
             event.preventDefault();
             event.stopPropagation();
             this.activate.emit({
-                type: 'keydown',
+                type: 'keyup',
                 event: event,
                 row: this.row,
                 group: this.group,
@@ -2055,11 +2055,11 @@ var DataTableBodyCellComponent = /** @class */ (function () {
         __metadata("design:returntype", void 0)
     ], DataTableBodyCellComponent.prototype, "onDblClick", null);
     __decorate([
-        core_1.HostListener('keydown', ['$event']),
+        core_1.HostListener('keyup', ['$event']),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [KeyboardEvent]),
         __metadata("design:returntype", void 0)
-    ], DataTableBodyCellComponent.prototype, "onKeyDown", null);
+    ], DataTableBodyCellComponent.prototype, "onKeyUp", null);
     DataTableBodyCellComponent = __decorate([
         core_1.Component({
             selector: 'datatable-body-cell',
@@ -2141,7 +2141,6 @@ var DatatableGroupHeaderDirective = /** @class */ (function () {
      * Toggle the expansion of a group
      */
     DatatableGroupHeaderDirective.prototype.toggleExpandGroup = function (group) {
-        console.log('Inside body-group-header.directive.ts group', group);
         this.toggle.emit({
             type: 'group',
             value: group
@@ -2453,7 +2452,7 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         event.rowElement = this.element;
         this.activate.emit(event);
     };
-    DataTableBodyRowComponent.prototype.onKeyDown = function (event) {
+    DataTableBodyRowComponent.prototype.onKeyUp = function (event) {
         var keyCode = event.keyCode;
         var isTargetRow = event.target === this.element;
         var isAction = keyCode === utils_1.Keys.return ||
@@ -2465,7 +2464,7 @@ var DataTableBodyRowComponent = /** @class */ (function () {
             event.preventDefault();
             event.stopPropagation();
             this.activate.emit({
-                type: 'keydown',
+                type: 'keyup',
                 event: event,
                 row: this.row,
                 rowElement: this.element
@@ -2545,11 +2544,11 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         __metadata("design:type", core_1.EventEmitter)
     ], DataTableBodyRowComponent.prototype, "activate", void 0);
     __decorate([
-        core_1.HostListener('keydown', ['$event']),
+        core_1.HostListener('keyup', ['$event']),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [KeyboardEvent]),
         __metadata("design:returntype", void 0)
-    ], DataTableBodyRowComponent.prototype, "onKeyDown", null);
+    ], DataTableBodyRowComponent.prototype, "onKeyUp", null);
     __decorate([
         core_1.HostListener('mouseenter', ['$event']),
         __metadata("design:type", Function),
@@ -3271,7 +3270,7 @@ var DataTableBodyComponent = /** @class */ (function () {
     DataTableBodyComponent = __decorate([
         core_1.Component({
             selector: 'datatable-body',
-            template: "\n    <datatable-selection\n      #selector\n      [selected]=\"selected\"\n      [rows]=\"temp\"\n      [selectCheck]=\"selectCheck\"\n      [selectEnabled]=\"selectEnabled\"\n      [selectionType]=\"selectionType\"\n      [rowIdentity]=\"rowIdentity\"\n      (select)=\"select.emit($event)\"\n      (activate)=\"activate.emit($event)\">\n      <datatable-progress\n        *ngIf=\"loadingIndicator\">\n      </datatable-progress>\n      <datatable-scroller\n        *ngIf=\"rows?.length\"\n        [scrollbarV]=\"scrollbarV\"\n        [scrollbarH]=\"scrollbarH\"\n        [scrollHeight]=\"scrollHeight\"\n        [scrollWidth]=\"columnGroupWidths.total\"\n        (scroll)=\"onBodyScroll($event)\">\n        <datatable-row-wrapper\n          [groupedRows]=\"groupedRows\"\n          *ngFor=\"let group of temp; let i = index; trackBy: rowTrackingFn;\"\n          [innerWidth]=\"innerWidth\"\n          [ngStyle]=\"getRowsStyles(group)\"\n          [rowDetail]=\"rowDetail\"\n          [groupHeader]=\"groupHeader\"\n          [offsetX]=\"offsetX\"\n          [detailRowHeight]=\"getDetailRowHeight(group[i],i)\"\n          [row]=\"group\"\n          [expanded]=\"getRowExpanded(group)\"\n          [rowIndex]=\"getRowIndex(group[i])\"\n          (rowContextmenu)=\"rowContextmenu.emit($event)\">\n          <datatable-body-row \n            *ngIf=\"!group.value\"        \n            tabindex=\"-1\"\n            [isSelected]=\"selector.getRowSelected(group)\"\n            [innerWidth]=\"innerWidth\"\n            [offsetX]=\"offsetX\"\n            [columns]=\"columns\"\n            [rowHeight]=\"getRowHeight(group)\"\n            [row]=\"group\"\n            [rowIndex]=\"getRowIndex(group)\"\n            [expanded]=\"getRowExpanded(group)\"            \n            [rowClass]=\"rowClass\"\n            (activate)=\"selector.onActivate($event, i)\">\n          </datatable-body-row>                       \n          <datatable-body-row\n            *ngFor=\"let row of group.value; let i = index; trackBy: rowTrackingFn;\"\n            tabindex=\"-1\"\n            [isSelected]=\"selector.getRowSelected(row)\"\n            [innerWidth]=\"innerWidth\"\n            [offsetX]=\"offsetX\"\n            [columns]=\"columns\"\n            [rowHeight]=\"getRowHeight(row)\"\n            [row]=\"row\"\n            [group]=\"group.value\"\n            [rowIndex]=\"getRowIndex(row)\"\n            [expanded]=\"getRowExpanded(row)\"\n            [rowClass]=\"rowClass\"\n            (activate)=\"selector.onActivate($event, i)\">\n          </datatable-body-row>\n        </datatable-row-wrapper>\n      </datatable-scroller>\n      <div\n        class=\"empty-row\"\n        *ngIf=\"!rows?.length\"\n        [innerHTML]=\"emptyMessage\">\n      </div>\n    </datatable-selection>\n  ",
+            template: "\n    <datatable-selection\n      #selector\n      [selected]=\"selected\"\n      [rows]=\"rows\"\n      [selectCheck]=\"selectCheck\"\n      [selectEnabled]=\"selectEnabled\"\n      [selectionType]=\"selectionType\"\n      [rowIdentity]=\"rowIdentity\"\n      (select)=\"select.emit($event)\"\n      (activate)=\"activate.emit($event)\">\n      <datatable-progress\n        *ngIf=\"loadingIndicator\">\n      </datatable-progress>\n      <datatable-scroller\n        *ngIf=\"rows?.length\"\n        [scrollbarV]=\"scrollbarV\"\n        [scrollbarH]=\"scrollbarH\"\n        [scrollHeight]=\"scrollHeight\"\n        [scrollWidth]=\"columnGroupWidths.total\"\n        (scroll)=\"onBodyScroll($event)\">\n        <datatable-row-wrapper\n          [groupedRows]=\"groupedRows\"\n          *ngFor=\"let group of temp; let i = index; trackBy: rowTrackingFn;\"\n          [innerWidth]=\"innerWidth\"\n          [ngStyle]=\"getRowsStyles(group)\"\n          [rowDetail]=\"rowDetail\"\n          [groupHeader]=\"groupHeader\"\n          [offsetX]=\"offsetX\"\n          [detailRowHeight]=\"getDetailRowHeight(group[i],i)\"\n          [row]=\"group\"\n          [expanded]=\"getRowExpanded(group)\"\n          [rowIndex]=\"getRowIndex(group[i])\"\n          (rowContextmenu)=\"rowContextmenu.emit($event)\">\n          <datatable-body-row \n            *ngIf=\"!group.value\"        \n            tabindex=\"-1\"\n            [isSelected]=\"selector.getRowSelected(group)\"\n            [innerWidth]=\"innerWidth\"\n            [offsetX]=\"offsetX\"\n            [columns]=\"columns\"\n            [rowHeight]=\"getRowHeight(group)\"\n            [row]=\"group\"\n            [rowIndex]=\"getRowIndex(group)\"\n            [expanded]=\"getRowExpanded(group)\"            \n            [rowClass]=\"rowClass\"\n            (activate)=\"selector.onActivate($event, indexes.first + i)\">\n          </datatable-body-row>                       \n          <datatable-body-row\n            *ngFor=\"let row of group.value; let i = index; trackBy: rowTrackingFn;\"\n            tabindex=\"-1\"\n            [isSelected]=\"selector.getRowSelected(row)\"\n            [innerWidth]=\"innerWidth\"\n            [offsetX]=\"offsetX\"\n            [columns]=\"columns\"\n            [rowHeight]=\"getRowHeight(row)\"\n            [row]=\"row\"\n            [group]=\"group.value\"\n            [rowIndex]=\"getRowIndex(row)\"\n            [expanded]=\"getRowExpanded(row)\"\n            [rowClass]=\"rowClass\"\n            (activate)=\"selector.onActivate($event, i)\">\n          </datatable-body-row>\n        </datatable-row-wrapper>\n      </datatable-scroller>\n      <div\n        class=\"empty-row\"\n        *ngIf=\"!rows?.length\"\n        [innerHTML]=\"emptyMessage\">\n      </div>\n    </datatable-selection>\n  ",
             changeDetection: core_1.ChangeDetectionStrategy.OnPush,
             host: {
                 class: 'datatable-body'
@@ -3508,7 +3507,7 @@ var DataTableSelectionComponent = /** @class */ (function () {
         if (select) {
             this.selectRow(event, index, row);
         }
-        else if (type === 'keydown') {
+        else if (type === 'keyup') {
             if (event.keyCode === utils_1.Keys.return) {
                 this.selectRow(event, index, row);
             }
@@ -3919,11 +3918,6 @@ var DatatableComponent = /** @class */ (function () {
          */
         this.externalSorting = false;
         /**
-         * The current offset ( page - 1 ) shown.
-         * Default value: `0`
-         */
-        this.offset = 0;
-        /**
          * Show the linear loading bar.
          * Default value: `false`
          */
@@ -4019,6 +4013,7 @@ var DatatableComponent = /** @class */ (function () {
         this.rowCount = 0;
         this.offsetX = 0;
         this._count = 0;
+        this._offset = 0;
         // get ref to elm for measuring
         this.element = element.nativeElement;
         this.rowDiffer = differs.find({}).create();
@@ -4127,6 +4122,20 @@ var DatatableComponent = /** @class */ (function () {
             this._count = val;
             // recalculate sizes/etc
             this.recalculate();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DatatableComponent.prototype, "offset", {
+        get: function () {
+            return Math.max(Math.min(this._offset, Math.ceil(this.rowCount / this.pageSize) - 1), 0);
+        },
+        /**
+         * The current offset ( page - 1 ) shown.
+         * Default value: `0`
+         */
+        set: function (val) {
+            this._offset = val;
         },
         enumerable: true,
         configurable: true
@@ -4661,8 +4670,9 @@ var DatatableComponent = /** @class */ (function () {
     ], DatatableComponent.prototype, "count", null);
     __decorate([
         core_1.Input(),
-        __metadata("design:type", Number)
-    ], DatatableComponent.prototype, "offset", void 0);
+        __metadata("design:type", Number),
+        __metadata("design:paramtypes", [Number])
+    ], DatatableComponent.prototype, "offset", null);
     __decorate([
         core_1.Input(),
         __metadata("design:type", Boolean)
@@ -5256,6 +5266,17 @@ var DataTableHeaderCellComponent = /** @class */ (function () {
             selectFn: this.selectFn
         };
     }
+    Object.defineProperty(DataTableHeaderCellComponent.prototype, "allRowsSelected", {
+        get: function () {
+            return this._allRowsSelected;
+        },
+        set: function (value) {
+            this._allRowsSelected = value;
+            this.cellContext.allRowsSelected = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(DataTableHeaderCellComponent.prototype, "column", {
         get: function () {
             return this._column;
@@ -5404,8 +5425,9 @@ var DataTableHeaderCellComponent = /** @class */ (function () {
     ], DataTableHeaderCellComponent.prototype, "sortDescendingIcon", void 0);
     __decorate([
         core_1.Input(),
-        __metadata("design:type", Boolean)
-    ], DataTableHeaderCellComponent.prototype, "allRowsSelected", void 0);
+        __metadata("design:type", Object),
+        __metadata("design:paramtypes", [Object])
+    ], DataTableHeaderCellComponent.prototype, "allRowsSelected", null);
     __decorate([
         core_1.Input(),
         __metadata("design:type", String)

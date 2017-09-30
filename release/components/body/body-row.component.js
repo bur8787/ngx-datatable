@@ -107,7 +107,7 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         event.rowElement = this.element;
         this.activate.emit(event);
     };
-    DataTableBodyRowComponent.prototype.onKeyDown = function (event) {
+    DataTableBodyRowComponent.prototype.onKeyUp = function (event) {
         var keyCode = event.keyCode;
         var isTargetRow = event.target === this.element;
         var isAction = keyCode === utils_1.Keys.return ||
@@ -119,7 +119,7 @@ var DataTableBodyRowComponent = /** @class */ (function () {
             event.preventDefault();
             event.stopPropagation();
             this.activate.emit({
-                type: 'keydown',
+                type: 'keyup',
                 event: event,
                 row: this.row,
                 rowElement: this.element
@@ -169,7 +169,7 @@ var DataTableBodyRowComponent = /** @class */ (function () {
         'rowHeight': [{ type: core_1.HostBinding, args: ['style.height.px',] }, { type: core_1.Input },],
         'columnsTotalWidths': [{ type: core_1.HostBinding, args: ['style.width.px',] },],
         'activate': [{ type: core_1.Output },],
-        'onKeyDown': [{ type: core_1.HostListener, args: ['keydown', ['$event'],] },],
+        'onKeyUp': [{ type: core_1.HostListener, args: ['keyup', ['$event'],] },],
         'onMouseenter': [{ type: core_1.HostListener, args: ['mouseenter', ['$event'],] },],
     };
     return DataTableBodyRowComponent;
