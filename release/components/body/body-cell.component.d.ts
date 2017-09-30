@@ -40,6 +40,7 @@ export declare class DataTableBodyCellComponent implements DoCheck, OnDestroy {
     onBlur(): void;
     onClick(event: MouseEvent): void;
     onDblClick(event: MouseEvent): void;
+    onKeyDown(event: KeyboardEvent): void;
     onKeyUp(event: KeyboardEvent): void;
     onCheckboxChange(event: any): void;
     calcSortDir(sorts: any[]): any;

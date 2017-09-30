@@ -48,7 +48,7 @@ var DataTableSelectionComponent = /** @class */ (function () {
         if (select) {
             this.selectRow(event, index, row);
         }
-        else if (type === 'keyup') {
+        else if (type === 'keydown' || type === 'keyup') {
             if (event.keyCode === utils_1.Keys.return) {
                 this.selectRow(event, index, row);
             }
