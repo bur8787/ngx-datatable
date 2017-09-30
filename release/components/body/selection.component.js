@@ -53,7 +53,7 @@ var DataTableSelectionComponent = /** @class */ (function () {
                 this.selectRow(event, index, row);
             }
             else {
-                model = this.onKeyboardFocus(model);
+                this.onKeyboardFocus(model);
             }
         }
         this.activate.emit(model);
@@ -67,21 +67,17 @@ var DataTableSelectionComponent = /** @class */ (function () {
         if (shouldFocus) {
             var isCellSelection = this.selectionType === types_1.SelectionType.cell;
             if (!model.cellElement || !isCellSelection) {
-                var nextRow = this.focusRow(model.rowElement, keyCode);
-                model.rowElement = nextRow;
+                this.focusRow(model.rowElement, keyCode);
             }
             else if (isCellSelection) {
-                var nextCell = this.focusCell(model.cellElement, model.rowElement, keyCode, model.cellIndex);
-                model.cellElement = nextCell;
+                this.focusCell(model.cellElement, model.rowElement, keyCode, model.cellIndex);
             }
         }
-        return model;
     };
     DataTableSelectionComponent.prototype.focusRow = function (rowElement, keyCode) {
         var nextRowElement = this.getPrevNextRow(rowElement, keyCode);
         if (nextRowElement)
             nextRowElement.focus();
-        return nextRowElement;
     };
     DataTableSelectionComponent.prototype.getPrevNextRow = function (rowElement, keyCode) {
         var parentElement = rowElement.parentElement;
@@ -116,7 +112,6 @@ var DataTableSelectionComponent = /** @class */ (function () {
         }
         if (nextCellElement)
             nextCellElement.focus();
-        return nextCellElement;
     };
     DataTableSelectionComponent.prototype.getRowSelected = function (row) {
         return this.getRowSelectedIdx(row, this.selected) > -1;

@@ -84,13 +84,13 @@ export class DataTableSelectionComponent {
       if ((<KeyboardEvent>event).keyCode === Keys.return) {
         this.selectRow(event, index, row);
       } else {
-        model = this.onKeyboardFocus(model);
+        this.onKeyboardFocus(model);
       }
     }
     this.activate.emit(model);
   }
 
-  onKeyboardFocus(model: Model): any {
+  onKeyboardFocus(model: Model): void {
     const { keyCode } = <KeyboardEvent>model.event;
     const shouldFocus =
       keyCode === Keys.up ||
@@ -103,20 +103,16 @@ export class DataTableSelectionComponent {
         this.selectionType === SelectionType.cell;
 
       if (!model.cellElement || !isCellSelection) {
-        const nextRow = this.focusRow(model.rowElement, keyCode);
-        model.rowElement =  nextRow;
+        this.focusRow(model.rowElement, keyCode);
       } else if (isCellSelection) {
-        const nextCell = this.focusCell(model.cellElement, model.rowElement, keyCode, model.cellIndex);
-        model.cellElement = nextCell;
+        this.focusCell(model.cellElement, model.rowElement, keyCode, model.cellIndex);
       }
     }
-    return model;
   }
 
-  focusRow(rowElement: any, keyCode: number): any {
+  focusRow(rowElement: any, keyCode: number): void {
     const nextRowElement = this.getPrevNextRow(rowElement, keyCode);
     if (nextRowElement) nextRowElement.focus();
-    return nextRowElement;
   }
 
   getPrevNextRow(rowElement: any, keyCode: number): any {
@@ -136,7 +132,7 @@ export class DataTableSelectionComponent {
     }
   }
 
-  focusCell(cellElement: any, rowElement: any, keyCode: number, cellIndex: number): any {
+  focusCell(cellElement: any, rowElement: any, keyCode: number, cellIndex: number): void {
     let nextCellElement: HTMLElement;
 
     if (keyCode === Keys.left) {
@@ -152,7 +148,6 @@ export class DataTableSelectionComponent {
     }
 
     if (nextCellElement) nextCellElement.focus();
-    return nextCellElement;
   }
 
   getRowSelected(row: any): boolean {
